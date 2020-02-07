@@ -9,7 +9,7 @@ ENV LANG="C.UTF-8" \
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Fix for GnuPG keyserver connection error
-RUN mkdir ~/.gnupg && echo "disable-ipv6" > ~/.gnupg/dirmngr.conf
+RUN mkdir ~/.gnupg; echo "disable-ipv6" >> ~/.gnupg/dirmngr.conf
 
 RUN apt-get update
 RUN apt-get install -yy --no-install-recommends \

@@ -13,7 +13,6 @@ Based on official Python Docker build configuration.
 
 
 ## Running
-
-./build.sh
-
-Produces `snakepit-build:latest` and `snakepit:latest` images.
+```
+$ docker build . -t snakepit:latest
+```

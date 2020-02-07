@@ -5,14 +5,11 @@ FROM ubuntu:18.04 AS build
 ENV LANG="C.UTF-8" \
 		LC_ALL="C.UTF-8"
 
-# Avoid interactive tzdata prompt
-ARG DEBIAN_FRONTEND=noninteractive
-
 # Fix for GnuPG keyserver connection error
 RUN mkdir ~/.gnupg; echo "disable-ipv6" >> ~/.gnupg/dirmngr.conf
 
 RUN apt-get update
-RUN apt-get install -yy --no-install-recommends \
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -yy --no-install-recommends \
 	autoconf \
 	automake \
 	autopoint \
@@ -188,7 +185,43 @@ RUN set -ex \
 		--with-system-expat \
 		--with-system-ffi \
 		--without-ensurepip \
-	&& make -j "$(nproc)"
+	&& make -j "$(nproc)" \
+		# setting PROFILE_TASK makes "--enable-optimizations" reasonable: https://bugs.python.org/issue36044 / https://github.com/docker-library/python/issues/160#issuecomment-509426916
+		PROFILE_TASK='-m test.regrtest --pgo \
+			test_array \
+			test_base64 \
+			test_binascii \
+			test_binhex \
+			test_binop \
+			test_bytes \
+			test_c_locale_coercion \
+			test_class \
+			test_cmath \
+			test_codecs \
+			test_compile \
+			test_complex \
+			test_csv \
+			test_decimal \
+			test_dict \
+			test_float \
+			test_fstring \
+			test_hashlib \
+			test_io \
+			test_iter \
+			test_json \
+			test_long \
+			test_math \
+			test_memoryview \
+			test_pickle \
+			test_re \
+			test_set \
+			test_slice \
+			test_struct \
+			test_threading \
+			test_time \
+			test_traceback \
+			test_unicode \
+		'
 
 # Build 3.6
 ARG GPG_KEY=0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D
@@ -216,7 +249,43 @@ RUN set -ex \
 		--with-system-expat \
 		--with-system-ffi \
 		--without-ensurepip \
-	&& make -j "$(nproc)"
+	&& make -j "$(nproc)" \
+		# setting PROFILE_TASK makes "--enable-optimizations" reasonable: https://bugs.python.org/issue36044 / https://github.com/docker-library/python/issues/160#issuecomment-509426916
+		PROFILE_TASK='-m test.regrtest --pgo \
+			test_array \
+			test_base64 \
+			test_binascii \
+			test_binhex \
+			test_binop \
+			test_bytes \
+			test_c_locale_coercion \
+			test_class \
+			test_cmath \
+			test_codecs \
+			test_compile \
+			test_complex \
+			test_csv \
+			test_decimal \
+			test_dict \
+			test_float \
+			test_fstring \
+			test_hashlib \
+			test_io \
+			test_iter \
+			test_json \
+			test_long \
+			test_math \
+			test_memoryview \
+			test_pickle \
+			test_re \
+			test_set \
+			test_slice \
+			test_struct \
+			test_threading \
+			test_time \
+			test_traceback \
+			test_unicode \
+		'
 
 # Build 3.7
 ARG GPG_KEY=0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D
@@ -238,7 +307,43 @@ RUN set -ex \
 	&& cd "/usr/src/python/${PYTHON_VERSION}" \
 	&& ./configure \
 		--enable-optimizations \
-	&& make -j "$(nproc)"
+	&& make -j "$(nproc)" \
+		# setting PROFILE_TASK makes "--enable-optimizations" reasonable: https://bugs.python.org/issue36044 / https://github.com/docker-library/python/issues/160#issuecomment-509426916
+		PROFILE_TASK='-m test.regrtest --pgo \
+			test_array \
+			test_base64 \
+			test_binascii \
+			test_binhex \
+			test_binop \
+			test_bytes \
+			test_c_locale_coercion \
+			test_class \
+			test_cmath \
+			test_codecs \
+			test_compile \
+			test_complex \
+			test_csv \
+			test_decimal \
+			test_dict \
+			test_float \
+			test_fstring \
+			test_hashlib \
+			test_io \
+			test_iter \
+			test_json \
+			test_long \
+			test_math \
+			test_memoryview \
+			test_pickle \
+			test_re \
+			test_set \
+			test_slice \
+			test_struct \
+			test_threading \
+			test_time \
+			test_traceback \
+			test_unicode \
+		'
 
 # Build 3.8
 ARG GPG_KEY=E3FF2839C048B25C084DEBE9B26995E310250568
@@ -276,10 +381,13 @@ RUN tar czf snakes.tar.gz /usr/local
 
 FROM ubuntu:18.04
 
+COPY --from=build snakes.tar.gz .
+RUN tar xf snakes.tar.gz && rm rm -rf snakes.tar.gz
+
 ENV LANG="C.UTF-8"
 
 RUN apt-get update
-RUN apt-get install -yy --no-install-recommends \
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -yy --no-install-recommends \
 	ca-certificates \
 	file \
 	libexpat1 \
@@ -292,6 +400,3 @@ RUN apt-get install -yy --no-install-recommends \
 	mime-support \
 	readline-common \
 	xz-utils
-
-COPY --from=build snakes.tar.gz .
-RUN tar xf snakes.tar.gz && rm rm -rf snakes.tar.gz

@@ -382,7 +382,7 @@ RUN tar czf snakes.tar.gz /usr/local
 FROM ubuntu:18.04
 
 COPY --from=build snakes.tar.gz .
-RUN tar xf snakes.tar.gz && rm rm -rf snakes.tar.gz
+RUN tar xf snakes.tar.gz && rm -rf snakes.tar.gz
 
 ENV LANG="C.UTF-8"
 

@@ -13,11 +13,13 @@ Based on official Python Docker build configuration.
 
 
 ## Running
+
 ```
 $ docker run -it dgladkov/snakepit:latest
 ```
 
 ## Building
+
 ```
 $ docker build . -t snakepit:latest
 ```

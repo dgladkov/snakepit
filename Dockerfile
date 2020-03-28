@@ -286,7 +286,7 @@ RUN set -ex \
 
 # Build 3.7
 ARG GPG_KEY=0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D
-ARG PYTHON_VERSION=3.7.6
+ARG PYTHON_VERSION=3.7.7
 RUN set -ex \
 	\
 	&& wget -O python.tar.xz "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz" \
@@ -344,7 +344,7 @@ RUN set -ex \
 
 # Build 3.8
 ARG GPG_KEY=E3FF2839C048B25C084DEBE9B26995E310250568
-ARG PYTHON_VERSION=3.8.1
+ARG PYTHON_VERSION=3.8.2
 RUN set -ex \
 	\
 	&& wget -O python.tar.xz "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz" \
